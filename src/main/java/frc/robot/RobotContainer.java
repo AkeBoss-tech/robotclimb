@@ -1,8 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Climb;
+import frc.robot.commands.ClimbExtend;
+import frc.robot.commands.ClimbReverse;
 import frc.robot.subsystems.SnailSubsystem;
 import frc.robot.util.SnailController;
 
@@ -28,6 +32,8 @@ public class RobotContainer {
     private Notifier updateNotifier;
     private int outputCounter;
 
+    private Climb climb;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -45,15 +51,22 @@ public class RobotContainer {
 
         updateNotifier = new Notifier(this::update);
         updateNotifier.startPeriodic(UPDATE_PERIOD);
+        configureSubsystems();
+        configureButtonBindings();
     }
 
     /**
      * Declare all of our subsystems and their default bindings
      */
+
+    
+
     private void configureSubsystems() {
         // declare each of the subsystems here
-
+        climb = new Climb();
+        
         subsystems = new ArrayList<>();
+        subsystems.add(climb);
         // add each of the subsystems to the arraylist here
     }
 
@@ -61,7 +74,8 @@ public class RobotContainer {
      * Define button -> command mappings.
      */
     private void configureButtonBindings() {
-        
+        operatorController.getButton(Button.kA.value).whenPressed(new ClimbExtend(climb));
+        operatorController.getButton(Button.kA.value).whenReleased(new ClimbReverse(climb));
     }
 
     /**
